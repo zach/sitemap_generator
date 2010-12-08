@@ -3,5 +3,6 @@
 
 en:
   hello: "Hello world"
-  resources:
-    contents: 'english_contents'
+  routes:
+    contents: 
+      as: english_contents

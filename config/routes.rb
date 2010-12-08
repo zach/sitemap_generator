@@ -1,5 +1,5 @@
 I18nSupport::Application.routes.draw do
-  localized do
+  localized(['fr'], :verbose => true) do
     resources :contents
   end
 end
