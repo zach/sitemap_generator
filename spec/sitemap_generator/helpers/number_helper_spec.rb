@@ -19,7 +19,7 @@ end
 
 describe SitemapGenerator::Helpers::NumberHelper do
   include SitemapGenerator::Helpers::NumberHelper
-  
+
   it "should number_with_delimiter" do
     number_with_delimiter(12345678).should == "12,345,678"
     number_with_delimiter(0).should == "0"
@@ -189,4 +189,3 @@ describe SitemapGenerator::Helpers::NumberHelper do
     end
   end
 end
-
