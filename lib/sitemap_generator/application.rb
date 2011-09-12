@@ -19,8 +19,8 @@ module SitemapGenerator
       Pathname.new(rails_root || Dir.getwd)
     end
 
-    protected 
-    
+    protected
+
     # Returns the root of the Rails application,
     # if this is running in a Rails context.
     # Returns `nil` if no such root is defined.
