@@ -43,7 +43,7 @@ module SitemapGenerator
       end
 
       def lastmod
-        File.mtime(path) rescue nil
+        File.mtime(location.path) rescue nil
       end
 
       def empty?
