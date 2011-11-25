@@ -10,12 +10,12 @@ module SitemapGenerator
       #   path, options - a path for the URL and options hash
       def initialize(path, options={})
         if sitemap = path.is_a?(SitemapGenerator::Builder::SitemapFile) && path
-          options.reverse_merge!(:host => sitemap.location.host, :lastmod => sitemap.lastmod)
+          SitemapGenerator::Utilities.reverse_merge!(options, :host => sitemap.location.host, :lastmod => sitemap.lastmod)
           path = sitemap.location.path_in_public
         end
 
         SitemapGenerator::Utilities.assert_valid_keys(options, :priority, :changefreq, :lastmod, :host, :images, :video, :geo, :news)
-        options.reverse_merge!(:priority => 0.5, :changefreq => 'weekly', :lastmod => Time.now, :images => [], :news => {})
+        SitemapGenerator::Utilities.reverse_merge!(options, :priority => 0.5, :changefreq => 'weekly', :lastmod => Time.now, :images => [], :news => {})
         self.merge!(
           :path => path,
           :priority => options[:priority],
@@ -39,7 +39,7 @@ module SitemapGenerator
           builder.changefreq self[:changefreq]          if self[:changefreq]
           builder.priority   self[:priority]            if self[:priority]
 
-          unless self[:news].blank?
+          unless SitemapGenerator::Utilities.blank?(self[:news])
             news_data = self[:news]
             builder.news:news do
               builder.news:publication do
@@ -57,7 +57,7 @@ module SitemapGenerator
           end
 
 
-          unless self[:images].blank?
+          unless SitemapGenerator::Utilities.blank?(self[:images])
             self[:images].each do |image|
               builder.image:image do
                 builder.image :loc, image[:loc]
@@ -69,7 +69,7 @@ module SitemapGenerator
             end
           end
 
-          unless self[:video].blank?
+          unless SitemapGenerator::Utilities.blank?(self[:video])
             video = self[:video]
             builder.video :video do
               builder.video :thumbnail_loc, video[:thumbnail_loc]
@@ -97,7 +97,7 @@ module SitemapGenerator
             end
           end
 
-          unless self[:geo].blank?
+          unless SitemapGenerator::Utilities.blank?(self[:geo])
             geo = self[:geo]
             builder.geo :geo do
               builder.geo :format, geo[:format] if geo[:format]
@@ -108,7 +108,7 @@ module SitemapGenerator
       end
 
       def news?
-        self[:news].present?
+        SitemapGenerator::Utilities.present?(self[:news])
       end
 
       protected
