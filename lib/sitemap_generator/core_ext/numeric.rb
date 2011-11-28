@@ -1,4 +1,4 @@
-class SGNumeric
+class SitemapGenerator::Numeric
   KILOBYTE = 1024
   MEGABYTE = KILOBYTE * 1024
   GIGABYTE = MEGABYTE * 1024
@@ -9,7 +9,7 @@ class SGNumeric
   def initialize(number)
     @number = number
   end
-  
+
   # Enables the use of byte calculations and declarations, like 45.bytes + 2.6.megabytes
   def bytes
     @number

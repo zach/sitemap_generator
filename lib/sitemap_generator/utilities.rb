@@ -33,22 +33,22 @@ module SitemapGenerator
       unknown_keys = hash.keys - [valid_keys].flatten
       raise(ArgumentError, "Unknown key(s): #{unknown_keys.join(", ")}") unless unknown_keys.empty?
     end
-    
+
     # Return a new hash with all keys converted to symbols, as long as
     # they respond to +to_sym+.
     def symbolize_keys(hash)
-      hash.dup.symbolize_keys!
+      symbolize_keys!(hash.dup)
     end
 
     # Destructively convert all keys to symbols, as long as they respond
-    # to +to_sym+.    
+    # to +to_sym+.
     def symbolize_keys!(hash)
       hash.keys.each do |key|
         hash[(key.to_sym rescue key) || key] = hash.delete(key)
       end
       hash
-    end 
-    
+    end
+
     # Rounds the float with the specified precision.
     #
     #   x = 1.337
@@ -62,8 +62,8 @@ module SitemapGenerator
       else
         float.round
       end
-    end   
-    
+    end
+
     # Allows for reverse merging two hashes where the keys in the calling hash take precedence over those
     # in the <tt>other_hash</tt>. This is particularly useful for initializing an option hash with default values:
     #
@@ -87,8 +87,8 @@ module SitemapGenerator
     # Modifies the receiver in place.
     def reverse_merge!(hash, other_hash)
       hash.merge!( other_hash ){|k,o,n| o }
-    end  
-    
+    end
+
     # An object is blank if it's false, empty, or a whitespace string.
     # For example, "", "   ", +nil+, [], and {} are blank.
     #
@@ -117,6 +117,14 @@ module SitemapGenerator
     # An object is present if it's not blank.
     def present?(object)
       !blank?(object)
-    end  
+    end
+
+    # Sets $VERBOSE for the duration of the block and back to its original value afterwards.
+    def with_warnings(flag)
+      old_verbose, $VERBOSE = $VERBOSE, flag
+      yield
+    ensure
+      $VERBOSE = old_verbose
+    end
   end
 end
