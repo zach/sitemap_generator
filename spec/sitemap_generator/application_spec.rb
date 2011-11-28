@@ -2,17 +2,17 @@ require 'spec_helper'
 
 describe SitemapGenerator::Application do
   before :all do
-    with_warnings(nil) do
+    SitemapGenerator::Utilities.with_warnings(nil) do
       Object.const_set(:Rails, Object.new)
     end
   end
-  
+
   after :all do
-    with_warnings(nil) do
+    SitemapGenerator::Utilities.with_warnings(nil) do
       Object.const_set(:Rails, nil)
     end
   end
-  
+
   before :each do
     @app = SitemapGenerator::Application.new
   end
