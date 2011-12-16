@@ -137,4 +137,16 @@ describe SitemapGenerator::Builder::SitemapUrl do
       url.send(:yes_or_no_with_default, 'surely', true).should == 'absolutely'
     end
   end
+
+  describe "format_float" do
+    it "should not modify if a string" do
+      new_url.send(:format_float, '0.4').should == '0.4'
+    end
+
+    it "should round to one decimal place" do
+      url = new_url
+      url.send(:format_float, 0.499999).should == '0.5'
+      url.send(:format_float, 3.444444).should == '3.4'
+    end
+  end
 end
