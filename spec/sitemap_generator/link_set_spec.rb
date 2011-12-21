@@ -7,8 +7,8 @@ describe SitemapGenerator::LinkSet do
   end
 
   describe "initializer options" do
-    options = [:public_path, :sitemaps_path, :default_host, :filename]
-    values = [File.expand_path(SitemapGenerator.app.root + 'tmp/'), 'mobile/', 'http://myhost.com', :xxx]
+    options = [:public_path, :sitemaps_path, :default_host, :filename, :search_engines]
+    values = [File.expand_path(SitemapGenerator.app.root + 'tmp/'), 'mobile/', 'http://myhost.com', :xxx, { :abc => '123' }]
 
     options.zip(values).each do |option, value|
       it "should set #{option} to #{value}" do
@@ -32,6 +32,10 @@ describe SitemapGenerator::LinkSet do
       it "#{option} should default to #{value}" do
         @ls.send(option).should == value
       end
+    end
+
+    it "should have search engines" do
+      @ls.search_engines.size.should == 4
     end
   end
 
@@ -91,7 +95,7 @@ describe SitemapGenerator::LinkSet do
     end
   end
 
-  describe "ping search engines" do
+  describe "ping search engines", :focus do
     before do
       @ls = SitemapGenerator::LinkSet.new :default_host => 'http://one.com'
     end
@@ -99,6 +103,26 @@ describe SitemapGenerator::LinkSet do
     it "should not fail" do
       @ls.expects(:open).at_least_once
       lambda { @ls.ping_search_engines }.should_not raise_error
+    end
+
+    it "should raise if no host is set" do
+      lambda { SitemapGenerator::LinkSet.new.ping_search_engines }.should raise_error(SitemapGenerator::SitemapError, 'No value set for host')
+    end
+
+    it "should use the sitemap index url provided" do
+      index_url = 'http://example.com/index.xml'
+      ls = SitemapGenerator::LinkSet.new(:search_engines => { :google => 'http://google.com/?url=%s' })
+      ls.expects(:open).with("http://google.com/?url=#{CGI.escape(index_url)}")
+      ls.ping_search_engines(index_url)
+    end
+
+    it "should use the sitemap index url from the link set" do
+      ls = SitemapGenerator::LinkSet.new(
+        :default_host => 'http://one.com',
+        :search_engines => { :google => 'http://google.com/?url=%s' })
+      ls.sitemap_index.location.url
+      ls.expects(:open).with("http://google.com/?url=#{CGI.escape(ls.sitemap_index.location.url)}")
+      ls.ping_search_engines(index_url)
     end
   end
 
