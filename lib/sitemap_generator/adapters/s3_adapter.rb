@@ -19,14 +19,15 @@ module SitemapGenerator
     def write(location, raw_data)
       SitemapGenerator::FileAdapter.new.write(location, raw_data)
 
-      credentials = {
+      fog_options = {
         :aws_access_key_id     => @aws_access_key_id,
         :aws_secret_access_key => @aws_secret_access_key,
         :provider              => @fog_provider,
+        :path_style            => true,
       }
-      credentials[:region] = @fog_region if @fog_region
+      fog_options[:region] = @fog_region if @fog_region
 
-      storage   = Fog::Storage.new(credentials)
+      storage   = Fog::Storage.new(fog_options)
       directory = storage.directories.new(:key => @fog_directory)
       directory.files.create(
         :key    => location.path_in_public,
